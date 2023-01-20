@@ -16,12 +16,18 @@ async function run(){
   try{
     const database= client.db('phone-bazar')
     const categoriesCollection=database.collection('categories')
+    const productsCollection=database.collection('products')
+
     // fetching categories from mongodb
     app.get('/categories',async(req,res)=>{
       const categories= await categoriesCollection.find({}).toArray()
       res.send(categories)
     })
-
+    app.get('/category/:id', async(req,res)=>{
+      const cat_id=parseInt(req.params.id)
+      const products=await productsCollection.find({cat_id}).toArray()
+      res.send(products)
+    })
 
   }
   finally{
