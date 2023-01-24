@@ -36,7 +36,7 @@ async function run(){
       const product=req.body
       const result =await productsCollection.insertOne(product)
       res.send(result)
-      
+
     })
     // adding users to database
     app.post('/users',async(req,res)=>{
@@ -70,11 +70,26 @@ async function run(){
     })
     // retrieving user's orders
     app.get('/user/bookings/:email',async(req,res)=>{
-      console.log(req.params.email);
       const query={email:req.params.email}
       const bookings=await bookingsCollection.find(query).toArray()
       res.send(bookings)
     })
+    // retrieving seller's products
+    app.get('/my-products/:email',async(req,res)=>{
+      const query={seller_email:req.params.email}
+      const products=await productsCollection.find(query).toArray()
+      res.send(products)
+    })
+    // deleting seller's product
+    app.delete('/my-products/:id',async(req,res)=>{
+      const query={_id:ObjectId(req.params.id)}
+      const result=productsCollection.deleteOne(query)
+      res.send(result)
+ 
+
+
+    })
+
 
 
   }
