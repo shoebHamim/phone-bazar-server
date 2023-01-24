@@ -85,11 +85,22 @@ async function run(){
       const query={_id:ObjectId(req.params.id)}
       const result=productsCollection.deleteOne(query)
       res.send(result)
- 
-
-
     })
 
+    //  updating advertise status
+    app.put('/my-products/:id',async(req,res)=>{
+      const id=req.params.id
+      const options={upsert:true}
+      const filter={_id:ObjectId(id)}
+      const updatedDoc={
+        $set:{
+          advertise:true
+        }
+      }
+      const result=await productsCollection.updateOne(filter,updatedDoc,options)
+      res.send(result)
+    })
+    
 
 
   }
