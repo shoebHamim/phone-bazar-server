@@ -18,16 +18,25 @@ async function run(){
     const categoriesCollection=database.collection('categories')
     const productsCollection=database.collection('products')
     const usersCollection=database.collection('users')
+    const bookingsCollection=database.collection('bookings')
 
     // fetching categories from mongodb
     app.get('/categories',async(req,res)=>{
       const categories= await categoriesCollection.find({}).toArray()
       res.send(categories)
     })
+    // fetching products under a category
     app.get('/category/:id', async(req,res)=>{
       const cat_id=parseInt(req.params.id)
       const products=await productsCollection.find({cat_id}).toArray()
       res.send(products)
+    })
+    // adding products 
+    app.post('/products',async(req,res)=>{
+      const product=req.body
+      const result =await productsCollection.insertOne(product)
+      res.send(result)
+      
     })
     // adding users to database
     app.post('/users',async(req,res)=>{
@@ -35,6 +44,13 @@ async function run(){
       const result=await usersCollection.insertOne(user)
       res.send(result)
     })
+    // accessing users in database
+    app.get('/users/:email',async(req,res)=>{
+      const email=req.params.email
+      const result= await usersCollection.findOne({email:email})
+      res.send(result)
+    })
+
     // jwt token
     app.get('/jwt',async(req,res)=>{
       const email=req.query.email;
@@ -45,6 +61,19 @@ async function run(){
         return res.send({accessToken:token})
       }
      res.status(403).send({accessToken:''})
+    })
+    // adding booking to db
+    app.post('/bookings',async(req,res)=>{
+      const booking=req.body
+      const result= await bookingsCollection.insertOne(booking)
+      res.send(result)
+    })
+    // retrieving user's orders
+    app.get('/user/bookings/:email',async(req,res)=>{
+      console.log(req.params.email);
+      const query={email:req.params.email}
+      const bookings=await bookingsCollection.find(query).toArray()
+      res.send(bookings)
     })
 
 
