@@ -100,6 +100,12 @@ async function run(){
       const result=await productsCollection.updateOne(filter,updatedDoc,options)
       res.send(result)
     })
+    // fetching advertised products
+    app.get('/products/advertised',async(req,res)=>{
+      const query={advertise:true}
+      const advertised= await productsCollection.find(query).toArray()
+      res.send(advertised)
+    })
     
 
 
