@@ -106,6 +106,25 @@ async function run(){
       const advertised= await productsCollection.find(query).toArray()
       res.send(advertised)
     })
+    // retrieving all sellers
+    app.get('/all-sellers',async(req,res)=>{
+      const query={accountType:'seller'}
+      const sellers=await usersCollection.find(query).toArray()
+      res.send(sellers)
+    })
+    // retrieving all buyers
+    app.get('/all-buyers',async(req,res)=>{
+      const query={accountType:'user'}
+      const buyers=await usersCollection.find(query).toArray()
+      res.send(buyers)
+    })
+    // deleting seller or buyer
+    app.delete('/users/:id',async(req,res)=>{
+      const query={_id:ObjectId(req.params.id)}
+      const result=await usersCollection.deleteOne(query)
+      res.send(result)
+    })
+
     
 
 
