@@ -12,6 +12,27 @@ const jwt = require('jsonwebtoken');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.mozdknj.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+// middleware function 
+const verifyJWT=(req,res,next)=>{
+  const authHeader=req.headers.authorization
+  if(!authHeader){
+    return res.status(401).send({message:'Unauthorized Access'})
+  }
+  const token=authHeader.split(' ')[1]
+  jwt.verify(token,process.env.ACCESS_TOKEN,function(error,decoded){
+    if(error){
+      return res.status(403).send({message:'Forbidden Access'})
+    }
+    req.decoded=decoded
+    next()
+  })
+
+
+
+
+
+}
+
 async function run(){
   try{
     const database= client.db('phone-bazar')
@@ -20,6 +41,18 @@ async function run(){
     const usersCollection=database.collection('users')
     const bookingsCollection=database.collection('bookings')
 
+ // jwt token
+        app.get('/jwt',async(req,res)=>{
+          const email=req.query.email;
+          const query={email:email}
+          const user=await usersCollection.findOne(query)
+          console.log(user);
+          if(user){
+            const token=jwt.sign({email},process.env.ACCESS_TOKEN,{expiresIn:'2h'})
+            return res.send({accessToken:token})
+          }
+         res.status(403).send({accessToken:''})
+        })
     // fetching categories from mongodb
     app.get('/categories',async(req,res)=>{
       const categories= await categoriesCollection.find({}).toArray()
@@ -47,9 +80,12 @@ async function run(){
       }
       const result=await productsCollection.updateOne(filter,updatedDoc,options)
       res.send(result)
-
-      
-
+    })
+    // retrieving reported items
+    app.get('/products/reported',async(req,res)=>{
+      const query={reported:true}
+      const result=await productsCollection.find(query).toArray()
+      res.send(result)
     })
     // adding products 
     app.post('/products',async(req,res)=>{
@@ -91,17 +127,7 @@ async function run(){
 
     })
 
-    // jwt token
-    app.get('/jwt',async(req,res)=>{
-      const email=req.query.email;
-      const query={email:email}
-      const user=await usersCollection.findOne(query)
-      if(user){
-        const token=jwt.sign({email},process.env.ACCESS_TOKEN,{expiresIn:'4h'})
-        return res.send({accessToken:token})
-      }
-     res.status(403).send({accessToken:''})
-    })
+
     // adding booking to db
     app.post('/bookings',async(req,res)=>{
       const booking=req.body
@@ -109,10 +135,18 @@ async function run(){
       res.send(result)
     })
     // retrieving user's orders
-    app.get('/user/bookings/:email',async(req,res)=>{
-      const query={email:req.params.email}
-      const bookings=await bookingsCollection.find(query).toArray()
-      res.send(bookings)
+    app.get('/user/bookings/:email',verifyJWT,async(req,res)=>{
+      const email=req.params.email
+      const query={email:email}
+      const decodedEmail=req.decoded?.email
+      if(email===decodedEmail){
+        const bookings=await bookingsCollection.find(query).toArray()
+        res.send(bookings)
+      }
+      else{
+        res.status(403).send({message:'Forbidden Access'})
+      }
+     
     })
     // retrieving seller's products
     app.get('/my-products/:email',async(req,res)=>{
