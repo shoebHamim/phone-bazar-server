@@ -50,6 +50,20 @@ async function run(){
       const result= await usersCollection.findOne({email:email})
       res.send(result)
     })
+    //  updating user's status 
+    app.put('/users/:id',async(req,res)=>{
+      const id=req.params.id
+      const options={upsert:true}
+      const filter={_id:ObjectId(id)}
+      const updatedDoc={
+        $set:{
+          verified:true
+        }
+      }
+      const result=await usersCollection.updateOne(filter,updatedDoc,options)
+      res.send(result)
+
+    })
 
     // jwt token
     app.get('/jwt',async(req,res)=>{
@@ -126,7 +140,6 @@ async function run(){
     })
 
     
-
 
   }
   finally{
