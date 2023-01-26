@@ -31,13 +31,19 @@ async function run(){
       const products=await productsCollection.find({cat_id}).toArray()
       res.send(products)
     })
+    // fetching all products
+    app.get('/products',async(req,res)=>{
+      const products=await productsCollection.find({}).toArray()
+      res.send(products)
+    })
     // adding products 
     app.post('/products',async(req,res)=>{
       const product=req.body
       const result =await productsCollection.insertOne(product)
       res.send(result)
-
     })
+    
+
     // adding users to database
     app.post('/users',async(req,res)=>{
       const user=req.body
@@ -48,7 +54,12 @@ async function run(){
     app.get('/users/:email',async(req,res)=>{
       const email=req.params.email
       const result= await usersCollection.findOne({email:email})
-      res.send(result)
+      if(result){
+        res.send(result)
+      }
+      else{
+        res.send({})
+      }
     })
     //  updating user's status 
     app.put('/users/:id',async(req,res)=>{
