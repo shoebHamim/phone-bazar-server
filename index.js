@@ -36,6 +36,21 @@ async function run(){
       const products=await productsCollection.find({}).toArray()
       res.send(products)
     })
+    // reporting a product
+    app.put('/products/:id',async(req,res)=>{
+      const id=req.params.id
+      // console.log(id);
+      const options={upsert:true}
+      const filter={_id:ObjectId(id)}
+      const updatedDoc={
+        $set:{reported:true}
+      }
+      const result=await productsCollection.updateOne(filter,updatedDoc,options)
+      res.send(result)
+
+      
+
+    })
     // adding products 
     app.post('/products',async(req,res)=>{
       const product=req.body
