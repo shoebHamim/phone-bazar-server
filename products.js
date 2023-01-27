@@ -10,6 +10,9 @@
     seller_name: 'Alan Walker',
     verified: true,
     img:'https://i.ibb.co/sttcTrh/budget-phone1.webp',
+    status:'available',
+    advertise:false,
+    reported:false,
   },{
     cat_id:1,
     name:'Samsung Galazy A53',
@@ -21,6 +24,9 @@
     seller_name: 'Alan Turing',
     verified: false,
     img:'https://i.ibb.co/t21HqY4/budget-phone2.webp',
+    status:'available',
+    advertise:false,
+    reported:false,
   },{
     cat_id:2,
     name:'Poco X4 Pro 5G',
@@ -32,6 +38,9 @@
     seller_name: 'Alan Joe',
     verified: true,
     img:'https://i.ibb.co/jWDM1rW/midrange-phone1.jpg',
+    status:'available',
+    advertise:false,
+    reported:false,
   },{
     cat_id:2,
     name:' Realme GT 2',
@@ -43,6 +52,9 @@
     seller_name: 'Tom Holand',
     verified: true,
     img:'https://i.ibb.co/BNnRwF6/midrange-phone2.jpg',
+    status:'available',
+    advertise:false,
+    reported:false,
   },{
     cat_id:3,
     name:'Apple iPhone 14 Pro',
@@ -54,6 +66,9 @@
     seller_name: 'Tom Cruise',
     verified: true,
     img:'https://i.ibb.co/J3p1Dv1/flagship-phone1.webp',
+    status:'available',
+    advertise:false,
+    reported:false,
   },{
     cat_id:3,
     name:'Samsung Galaxy S22 Ultra',
@@ -65,6 +80,9 @@
     seller_name: 'Micheal Phelps',
     verified: true,
     img:'https://i.ibb.co/1nXbdQh/flagship-phone2.webp',
+    status:'available',
+    advertise:false,
+    reported:false,
   },
 
 ]
